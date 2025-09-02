@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package filesystem;
+
+option go_package = "github.com/RGood/shrdr/common/pkg/generated/filesystem;filesystem";
+
+message FSEntry {
+    oneof record {
+        File file = 1;
+        Folder folder = 2;
+    }
+}
+
+message File {
+    string name = 1;
+    int64 size = 2;
+}
+
+message Folder {
+    string name = 1;
+    repeated FSEntry contents = 2;
+}
+
+message BroadcastManifest {
+    repeated FSEntry contents = 1;
+}
+
+// Upstream requests for data
+message BroadcastRequest {
+    string user_id = 1;
+    string request_id = 2;
+    string file_path = 3;
+}
+
+message DownloadRequest {
+    string from_user = 1;
+    string file_path = 2;
+    string chunk_size = 3;
+}
+
+message FileChunk {
+    string file_path = 1;
+    bytes content = 2;
+    int64 chunk_count = 3;
+    int64 total_chunks = 4;
+}
+
+message UploadResponse {
+    bool success = 1;
+}
+
+message GetManifestRequest {
+    string path = 1;
+    bool recursive = 2;
+}
+
+message GetManifestResponse {
+    repeated FSEntry contents = 1;
+}
+
+service Filesystem {
+    // Offer files for streaming. Receive download requests as a BroadcastRequest
+    rpc Broadcast(BroadcastManifest) returns (stream BroadcastRequest);
+
+    // List available download sources
+    rpc GetManifest(GetManifestRequest) returns (GetManifestResponse);
+
+    // Download initiates a download stream.
+    // Notifies target client with BroadcastRequest.
+    rpc Download(DownloadRequest) returns (stream FileChunk);
+
+    // Upload initiates an upload stream attempting to fulfill a BroadcastRequest.
+    rpc Upload(stream FileChunk) returns (UploadResponse);
+}

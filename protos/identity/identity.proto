@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package identity;
+
+option go_package = "github.com/RGood/shrdr/common/pkg/generated/identity;identity";
+
+message User {
+    string id = 1;
+    string name = 2;
+}
+
+message LoginRequest {
+    string username = 1;
+}
+
+message LoginResponse {
+    User user = 1;
+    string token = 2;
+}
+
+message LogoutRequest {
+    string user_id = 1;
+}
+
+message LogoutResponse {
+    bool success = 1;
+}
+
+service Authentication {
+    rpc Login(LoginRequest) returns (LoginResponse);
+    rpc Logout(LogoutRequest) returns (LogoutResponse);
+}
