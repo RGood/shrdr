@@ -11,7 +11,7 @@ Shredder
 
 ### Getting Started
 
-```shell
+```bash
 make install-tools
 ```
 
@@ -20,7 +20,7 @@ Installs:
 * `protoc-gen-go-grpc`
 * `protoc-gen-ts`
 
-```shell
+```bash
 make protos
 ```
 
