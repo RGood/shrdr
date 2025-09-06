@@ -13,9 +13,9 @@ message LoginRequest {
     string username = 1;
 }
 
-message LoginResponse {
-    User user = 1;
-    string token = 2;
+message AuthInfo {
+    string token = 1;
+    User user = 2;
 }
 
 message LogoutRequest {
@@ -35,6 +35,5 @@ message WhoamiResponse {
 
 service Authentication {
     rpc Whoami(WhoamiRequest) returns (WhoamiResponse);
-    rpc Login(LoginRequest) returns (LoginResponse);
-    rpc Logout(LogoutRequest) returns (LogoutResponse);
+    rpc Connect(LoginRequest) returns (stream AuthInfo);
 }

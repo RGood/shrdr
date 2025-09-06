@@ -36,11 +36,13 @@ func (m *SyncMap[K, V]) Set(key K, value V) {
 	m.data[key] = value
 }
 
-func (m *SyncMap[K, V]) Delete(key K) {
+func (m *SyncMap[K, V]) Delete(key K) (V, bool) {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 
+	value, ok := m.data[key]
 	delete(m.data, key)
+	return value, ok
 }
 
 // ForEach iterates over the key-value pairs in the map and applies the provided function.

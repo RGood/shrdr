@@ -163,61 +163,61 @@ export namespace identity {
             return LoginRequest.deserialize(bytes);
         }
     }
-    export class LoginResponse extends pb_1.Message {
+    export class AuthInfo extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
-            user?: User;
             token?: string;
+            user?: User;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
             if (!Array.isArray(data) && typeof data == "object") {
-                if ("user" in data && data.user != undefined) {
-                    this.user = data.user;
-                }
                 if ("token" in data && data.token != undefined) {
                     this.token = data.token;
                 }
+                if ("user" in data && data.user != undefined) {
+                    this.user = data.user;
+                }
             }
-        }
-        get user() {
-            return pb_1.Message.getWrapperField(this, User, 1) as User;
-        }
-        set user(value: User) {
-            pb_1.Message.setWrapperField(this, 1, value);
-        }
-        get has_user() {
-            return pb_1.Message.getField(this, 1) != null;
         }
         get token() {
-            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
         }
         set token(value: string) {
-            pb_1.Message.setField(this, 2, value);
+            pb_1.Message.setField(this, 1, value);
+        }
+        get user() {
+            return pb_1.Message.getWrapperField(this, User, 2) as User;
+        }
+        set user(value: User) {
+            pb_1.Message.setWrapperField(this, 2, value);
+        }
+        get has_user() {
+            return pb_1.Message.getField(this, 2) != null;
         }
         static fromObject(data: {
-            user?: ReturnType<typeof User.prototype.toObject>;
             token?: string;
-        }): LoginResponse {
-            const message = new LoginResponse({});
-            if (data.user != null) {
-                message.user = User.fromObject(data.user);
-            }
+            user?: ReturnType<typeof User.prototype.toObject>;
+        }): AuthInfo {
+            const message = new AuthInfo({});
             if (data.token != null) {
                 message.token = data.token;
+            }
+            if (data.user != null) {
+                message.user = User.fromObject(data.user);
             }
             return message;
         }
         toObject() {
             const data: {
-                user?: ReturnType<typeof User.prototype.toObject>;
                 token?: string;
+                user?: ReturnType<typeof User.prototype.toObject>;
             } = {};
-            if (this.user != null) {
-                data.user = this.user.toObject();
-            }
             if (this.token != null) {
                 data.token = this.token;
+            }
+            if (this.user != null) {
+                data.user = this.user.toObject();
             }
             return data;
         }
@@ -225,24 +225,24 @@ export namespace identity {
         serialize(w: pb_1.BinaryWriter): void;
         serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
             const writer = w || new pb_1.BinaryWriter();
-            if (this.has_user)
-                writer.writeMessage(1, this.user, () => this.user.serialize(writer));
             if (this.token.length)
-                writer.writeString(2, this.token);
+                writer.writeString(1, this.token);
+            if (this.has_user)
+                writer.writeMessage(2, this.user, () => this.user.serialize(writer));
             if (!w)
                 return writer.getResultBuffer();
         }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): LoginResponse {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new LoginResponse();
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): AuthInfo {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new AuthInfo();
             while (reader.nextField()) {
                 if (reader.isEndGroup())
                     break;
                 switch (reader.getFieldNumber()) {
                     case 1:
-                        reader.readMessage(message.user, () => message.user = User.deserialize(reader));
+                        message.token = reader.readString();
                         break;
                     case 2:
-                        message.token = reader.readString();
+                        reader.readMessage(message.user, () => message.user = User.deserialize(reader));
                         break;
                     default: reader.skipField();
                 }
@@ -252,8 +252,8 @@ export namespace identity {
         serializeBinary(): Uint8Array {
             return this.serialize();
         }
-        static deserializeBinary(bytes: Uint8Array): LoginResponse {
-            return LoginResponse.deserialize(bytes);
+        static deserializeBinary(bytes: Uint8Array): AuthInfo {
+            return AuthInfo.deserialize(bytes);
         }
     }
     export class LogoutRequest extends pb_1.Message {
@@ -535,29 +535,19 @@ export namespace identity {
                 responseSerialize: (message: WhoamiResponse) => Buffer.from(message.serialize()),
                 responseDeserialize: (bytes: Buffer) => WhoamiResponse.deserialize(new Uint8Array(bytes))
             },
-            Login: {
-                path: "/identity.Authentication/Login",
+            Connect: {
+                path: "/identity.Authentication/Connect",
                 requestStream: false,
-                responseStream: false,
+                responseStream: true,
                 requestSerialize: (message: LoginRequest) => Buffer.from(message.serialize()),
                 requestDeserialize: (bytes: Buffer) => LoginRequest.deserialize(new Uint8Array(bytes)),
-                responseSerialize: (message: LoginResponse) => Buffer.from(message.serialize()),
-                responseDeserialize: (bytes: Buffer) => LoginResponse.deserialize(new Uint8Array(bytes))
-            },
-            Logout: {
-                path: "/identity.Authentication/Logout",
-                requestStream: false,
-                responseStream: false,
-                requestSerialize: (message: LogoutRequest) => Buffer.from(message.serialize()),
-                requestDeserialize: (bytes: Buffer) => LogoutRequest.deserialize(new Uint8Array(bytes)),
-                responseSerialize: (message: LogoutResponse) => Buffer.from(message.serialize()),
-                responseDeserialize: (bytes: Buffer) => LogoutResponse.deserialize(new Uint8Array(bytes))
+                responseSerialize: (message: AuthInfo) => Buffer.from(message.serialize()),
+                responseDeserialize: (bytes: Buffer) => AuthInfo.deserialize(new Uint8Array(bytes))
             }
         };
         [method: string]: grpc_1.UntypedHandleCall;
         abstract Whoami(call: grpc_1.ServerUnaryCall<WhoamiRequest, WhoamiResponse>, callback: grpc_1.sendUnaryData<WhoamiResponse>): void;
-        abstract Login(call: grpc_1.ServerUnaryCall<LoginRequest, LoginResponse>, callback: grpc_1.sendUnaryData<LoginResponse>): void;
-        abstract Logout(call: grpc_1.ServerUnaryCall<LogoutRequest, LogoutResponse>, callback: grpc_1.sendUnaryData<LogoutResponse>): void;
+        abstract Connect(call: grpc_1.ServerWritableStream<LoginRequest, AuthInfo>): void;
     }
     export class AuthenticationClient extends grpc_1.makeGenericClientConstructor(UnimplementedAuthenticationService.definition, "Authentication", {}) {
         constructor(address: string, credentials: grpc_1.ChannelCredentials, options?: Partial<grpc_1.ChannelOptions>) {
@@ -566,11 +556,8 @@ export namespace identity {
         Whoami: GrpcUnaryServiceInterface<WhoamiRequest, WhoamiResponse> = (message: WhoamiRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<WhoamiResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<WhoamiResponse>, callback?: grpc_1.requestCallback<WhoamiResponse>): grpc_1.ClientUnaryCall => {
             return super.Whoami(message, metadata, options, callback);
         };
-        Login: GrpcUnaryServiceInterface<LoginRequest, LoginResponse> = (message: LoginRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<LoginResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<LoginResponse>, callback?: grpc_1.requestCallback<LoginResponse>): grpc_1.ClientUnaryCall => {
-            return super.Login(message, metadata, options, callback);
-        };
-        Logout: GrpcUnaryServiceInterface<LogoutRequest, LogoutResponse> = (message: LogoutRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<LogoutResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<LogoutResponse>, callback?: grpc_1.requestCallback<LogoutResponse>): grpc_1.ClientUnaryCall => {
-            return super.Logout(message, metadata, options, callback);
+        Connect: GrpcStreamServiceInterface<LoginRequest, AuthInfo> = (message: LoginRequest, metadata?: grpc_1.Metadata | grpc_1.CallOptions, options?: grpc_1.CallOptions): grpc_1.ClientReadableStream<AuthInfo> => {
+            return super.Connect(message, metadata, options);
         };
     }
 }

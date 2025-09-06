@@ -176,75 +176,75 @@ var identity;
     }
   }
   identity2.LoginRequest = LoginRequest;
-  class LoginResponse extends pb_1.Message {
+  class AuthInfo extends pb_1.Message {
     #one_of_decls = [];
     constructor(data) {
       super();
       pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
       if (!Array.isArray(data) && typeof data == "object") {
-        if ("user" in data && data.user != void 0) {
-          this.user = data.user;
-        }
         if ("token" in data && data.token != void 0) {
           this.token = data.token;
         }
+        if ("user" in data && data.user != void 0) {
+          this.user = data.user;
+        }
       }
-    }
-    get user() {
-      return pb_1.Message.getWrapperField(this, User, 1);
-    }
-    set user(value) {
-      pb_1.Message.setWrapperField(this, 1, value);
-    }
-    get has_user() {
-      return pb_1.Message.getField(this, 1) != null;
     }
     get token() {
-      return pb_1.Message.getFieldWithDefault(this, 2, "");
+      return pb_1.Message.getFieldWithDefault(this, 1, "");
     }
     set token(value) {
-      pb_1.Message.setField(this, 2, value);
+      pb_1.Message.setField(this, 1, value);
+    }
+    get user() {
+      return pb_1.Message.getWrapperField(this, User, 2);
+    }
+    set user(value) {
+      pb_1.Message.setWrapperField(this, 2, value);
+    }
+    get has_user() {
+      return pb_1.Message.getField(this, 2) != null;
     }
     static fromObject(data) {
-      const message = new LoginResponse({});
-      if (data.user != null) {
-        message.user = User.fromObject(data.user);
-      }
+      const message = new AuthInfo({});
       if (data.token != null) {
         message.token = data.token;
+      }
+      if (data.user != null) {
+        message.user = User.fromObject(data.user);
       }
       return message;
     }
     toObject() {
       const data = {};
-      if (this.user != null) {
-        data.user = this.user.toObject();
-      }
       if (this.token != null) {
         data.token = this.token;
+      }
+      if (this.user != null) {
+        data.user = this.user.toObject();
       }
       return data;
     }
     serialize(w) {
       const writer = w || new pb_1.BinaryWriter();
-      if (this.has_user)
-        writer.writeMessage(1, this.user, () => this.user.serialize(writer));
       if (this.token.length)
-        writer.writeString(2, this.token);
+        writer.writeString(1, this.token);
+      if (this.has_user)
+        writer.writeMessage(2, this.user, () => this.user.serialize(writer));
       if (!w)
         return writer.getResultBuffer();
     }
     static deserialize(bytes) {
-      const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new LoginResponse();
+      const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new AuthInfo();
       while (reader.nextField()) {
         if (reader.isEndGroup())
           break;
         switch (reader.getFieldNumber()) {
           case 1:
-            reader.readMessage(message.user, () => message.user = User.deserialize(reader));
+            message.token = reader.readString();
             break;
           case 2:
-            message.token = reader.readString();
+            reader.readMessage(message.user, () => message.user = User.deserialize(reader));
             break;
           default:
             reader.skipField();
@@ -256,10 +256,10 @@ var identity;
       return this.serialize();
     }
     static deserializeBinary(bytes) {
-      return LoginResponse.deserialize(bytes);
+      return AuthInfo.deserialize(bytes);
     }
   }
-  identity2.LoginResponse = LoginResponse;
+  identity2.AuthInfo = AuthInfo;
   class LogoutRequest extends pb_1.Message {
     #one_of_decls = [];
     constructor(data) {
@@ -498,23 +498,14 @@ var identity;
         responseSerialize: (message) => Buffer.from(message.serialize()),
         responseDeserialize: (bytes) => WhoamiResponse.deserialize(new Uint8Array(bytes))
       },
-      Login: {
-        path: "/identity.Authentication/Login",
+      Connect: {
+        path: "/identity.Authentication/Connect",
         requestStream: false,
-        responseStream: false,
+        responseStream: true,
         requestSerialize: (message) => Buffer.from(message.serialize()),
         requestDeserialize: (bytes) => LoginRequest.deserialize(new Uint8Array(bytes)),
         responseSerialize: (message) => Buffer.from(message.serialize()),
-        responseDeserialize: (bytes) => LoginResponse.deserialize(new Uint8Array(bytes))
-      },
-      Logout: {
-        path: "/identity.Authentication/Logout",
-        requestStream: false,
-        responseStream: false,
-        requestSerialize: (message) => Buffer.from(message.serialize()),
-        requestDeserialize: (bytes) => LogoutRequest.deserialize(new Uint8Array(bytes)),
-        responseSerialize: (message) => Buffer.from(message.serialize()),
-        responseDeserialize: (bytes) => LogoutResponse.deserialize(new Uint8Array(bytes))
+        responseDeserialize: (bytes) => AuthInfo.deserialize(new Uint8Array(bytes))
       }
     };
   }
@@ -526,11 +517,8 @@ var identity;
     Whoami = (message, metadata, options, callback) => {
       return super.Whoami(message, metadata, options, callback);
     };
-    Login = (message, metadata, options, callback) => {
-      return super.Login(message, metadata, options, callback);
-    };
-    Logout = (message, metadata, options, callback) => {
-      return super.Logout(message, metadata, options, callback);
+    Connect = (message, metadata, options) => {
+      return super.Connect(message, metadata, options);
     };
   }
   identity2.AuthenticationClient = AuthenticationClient;

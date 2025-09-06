@@ -35,3 +35,7 @@ protos: clean protos-go protos-ts
 .PHONY: clean
 clean:
 	rm -rf $(GO_OUT_DIR) $(TS_OUT_DIR)
+
+.PHONY: run
+run:
+	docker-compose up --build

@@ -19,9 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Authentication_Whoami_FullMethodName = "/identity.Authentication/Whoami"
-	Authentication_Login_FullMethodName  = "/identity.Authentication/Login"
-	Authentication_Logout_FullMethodName = "/identity.Authentication/Logout"
+	Authentication_Whoami_FullMethodName  = "/identity.Authentication/Whoami"
+	Authentication_Connect_FullMethodName = "/identity.Authentication/Connect"
 )
 
 // AuthenticationClient is the client API for Authentication service.
@@ -29,8 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthenticationClient interface {
 	Whoami(ctx context.Context, in *WhoamiRequest, opts ...grpc.CallOption) (*WhoamiResponse, error)
-	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
-	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
+	Connect(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[AuthInfo], error)
 }
 
 type authenticationClient struct {
@@ -51,33 +49,31 @@ func (c *authenticationClient) Whoami(ctx context.Context, in *WhoamiRequest, op
 	return out, nil
 }
 
-func (c *authenticationClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
+func (c *authenticationClient) Connect(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[AuthInfo], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(LoginResponse)
-	err := c.cc.Invoke(ctx, Authentication_Login_FullMethodName, in, out, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &Authentication_ServiceDesc.Streams[0], Authentication_Connect_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &grpc.GenericClientStream[LoginRequest, AuthInfo]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
 }
 
-func (c *authenticationClient) Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(LogoutResponse)
-	err := c.cc.Invoke(ctx, Authentication_Logout_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type Authentication_ConnectClient = grpc.ServerStreamingClient[AuthInfo]
 
 // AuthenticationServer is the server API for Authentication service.
 // All implementations must embed UnimplementedAuthenticationServer
 // for forward compatibility.
 type AuthenticationServer interface {
 	Whoami(context.Context, *WhoamiRequest) (*WhoamiResponse, error)
-	Login(context.Context, *LoginRequest) (*LoginResponse, error)
-	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
+	Connect(*LoginRequest, grpc.ServerStreamingServer[AuthInfo]) error
 	mustEmbedUnimplementedAuthenticationServer()
 }
 
@@ -91,11 +87,8 @@ type UnimplementedAuthenticationServer struct{}
 func (UnimplementedAuthenticationServer) Whoami(context.Context, *WhoamiRequest) (*WhoamiResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Whoami not implemented")
 }
-func (UnimplementedAuthenticationServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
-}
-func (UnimplementedAuthenticationServer) Logout(context.Context, *LogoutRequest) (*LogoutResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+func (UnimplementedAuthenticationServer) Connect(*LoginRequest, grpc.ServerStreamingServer[AuthInfo]) error {
+	return status.Errorf(codes.Unimplemented, "method Connect not implemented")
 }
 func (UnimplementedAuthenticationServer) mustEmbedUnimplementedAuthenticationServer() {}
 func (UnimplementedAuthenticationServer) testEmbeddedByValue()                        {}
@@ -136,41 +129,16 @@ func _Authentication_Whoami_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Authentication_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginRequest)
-	if err := dec(in); err != nil {
-		return nil, err
+func _Authentication_Connect_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(LoginRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
 	}
-	if interceptor == nil {
-		return srv.(AuthenticationServer).Login(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Authentication_Login_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthenticationServer).Login(ctx, req.(*LoginRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	return srv.(AuthenticationServer).Connect(m, &grpc.GenericServerStream[LoginRequest, AuthInfo]{ServerStream: stream})
 }
 
-func _Authentication_Logout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LogoutRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthenticationServer).Logout(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Authentication_Logout_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthenticationServer).Logout(ctx, req.(*LogoutRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type Authentication_ConnectServer = grpc.ServerStreamingServer[AuthInfo]
 
 // Authentication_ServiceDesc is the grpc.ServiceDesc for Authentication service.
 // It's only intended for direct use with grpc.RegisterService,
@@ -183,15 +151,13 @@ var Authentication_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "Whoami",
 			Handler:    _Authentication_Whoami_Handler,
 		},
+	},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "Login",
-			Handler:    _Authentication_Login_Handler,
-		},
-		{
-			MethodName: "Logout",
-			Handler:    _Authentication_Logout_Handler,
+			StreamName:    "Connect",
+			Handler:       _Authentication_Connect_Handler,
+			ServerStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "identity/identity.proto",
 }
