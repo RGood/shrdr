@@ -1,0 +1,14 @@
+{
+    "name": "@shrdr/web-ui",
+    "version": "0.0.1",
+    "license": "MIT",
+    "scripts": {
+        "build": "esbuild --format=cjs src/**/*.ts --outdir=dist"
+    },
+    "dependencies": {
+        "@shrdr/protos": "*"
+    },
+    "devDependencies": {
+        "esbuild": "^0.25.9"
+    }
+}

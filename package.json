@@ -1,0 +1,16 @@
+{
+    "name": "shrdr",
+    "version": "0.0.1",
+    "license": "MIT",
+    "private": true,
+    "workspaces": [
+        "web-ui",
+        "packages/*"
+    ],
+    "scripts": {
+        "protos": "protoc --ts_out=packages/protos/src -I protos protos/**/*.proto"
+    },
+    "devDependencies": {
+        "protoc-gen-ts": "^0.8.7"
+    }
+}

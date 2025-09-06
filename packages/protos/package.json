@@ -1,0 +1,18 @@
+{
+    "name": "@shrdr/protos",
+    "version": "0.0.1",
+    "license": "MIT",
+    "scripts": {
+        "build": "esbuild --format=cjs src/**/*.ts --outdir=dist"
+    },
+    "dependencies": {
+        "@grpc/grpc-js": "^1.13.4",
+        "google-protobuf": "^4.0.0"
+    },
+    "devDependencies": {
+        "esbuild": "^0.25.9"
+    },
+    "exports": {
+        "./*": "./dist/*"
+    }
+}
