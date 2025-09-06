@@ -257,6 +257,86 @@ func (x *LogoutResponse) GetSuccess() bool {
 	return false
 }
 
+type WhoamiRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WhoamiRequest) Reset() {
+	*x = WhoamiRequest{}
+	mi := &file_identity_identity_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WhoamiRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WhoamiRequest) ProtoMessage() {}
+
+func (x *WhoamiRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_identity_identity_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WhoamiRequest.ProtoReflect.Descriptor instead.
+func (*WhoamiRequest) Descriptor() ([]byte, []int) {
+	return file_identity_identity_proto_rawDescGZIP(), []int{5}
+}
+
+type WhoamiResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WhoamiResponse) Reset() {
+	*x = WhoamiResponse{}
+	mi := &file_identity_identity_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WhoamiResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WhoamiResponse) ProtoMessage() {}
+
+func (x *WhoamiResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_identity_identity_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WhoamiResponse.ProtoReflect.Descriptor instead.
+func (*WhoamiResponse) Descriptor() ([]byte, []int) {
+	return file_identity_identity_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *WhoamiResponse) GetUser() *User {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
 var File_identity_identity_proto protoreflect.FileDescriptor
 
 const file_identity_identity_proto_rawDesc = "" +
@@ -273,8 +353,12 @@ const file_identity_identity_proto_rawDesc = "" +
 	"\rLogoutRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\"*\n" +
 	"\x0eLogoutResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess2\x87\x01\n" +
-	"\x0eAuthentication\x128\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"\x0f\n" +
+	"\rWhoamiRequest\"4\n" +
+	"\x0eWhoamiResponse\x12\"\n" +
+	"\x04user\x18\x01 \x01(\v2\x0e.identity.UserR\x04user2\xc4\x01\n" +
+	"\x0eAuthentication\x12;\n" +
+	"\x06Whoami\x12\x17.identity.WhoamiRequest\x1a\x18.identity.WhoamiResponse\x128\n" +
 	"\x05Login\x12\x16.identity.LoginRequest\x1a\x17.identity.LoginResponse\x12;\n" +
 	"\x06Logout\x12\x17.identity.LogoutRequest\x1a\x18.identity.LogoutResponseB?Z=github.com/RGood/shrdr/common/pkg/generated/identity;identityb\x06proto3"
 
@@ -290,25 +374,30 @@ func file_identity_identity_proto_rawDescGZIP() []byte {
 	return file_identity_identity_proto_rawDescData
 }
 
-var file_identity_identity_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_identity_identity_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_identity_identity_proto_goTypes = []any{
 	(*User)(nil),           // 0: identity.User
 	(*LoginRequest)(nil),   // 1: identity.LoginRequest
 	(*LoginResponse)(nil),  // 2: identity.LoginResponse
 	(*LogoutRequest)(nil),  // 3: identity.LogoutRequest
 	(*LogoutResponse)(nil), // 4: identity.LogoutResponse
+	(*WhoamiRequest)(nil),  // 5: identity.WhoamiRequest
+	(*WhoamiResponse)(nil), // 6: identity.WhoamiResponse
 }
 var file_identity_identity_proto_depIdxs = []int32{
 	0, // 0: identity.LoginResponse.user:type_name -> identity.User
-	1, // 1: identity.Authentication.Login:input_type -> identity.LoginRequest
-	3, // 2: identity.Authentication.Logout:input_type -> identity.LogoutRequest
-	2, // 3: identity.Authentication.Login:output_type -> identity.LoginResponse
-	4, // 4: identity.Authentication.Logout:output_type -> identity.LogoutResponse
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // 1: identity.WhoamiResponse.user:type_name -> identity.User
+	5, // 2: identity.Authentication.Whoami:input_type -> identity.WhoamiRequest
+	1, // 3: identity.Authentication.Login:input_type -> identity.LoginRequest
+	3, // 4: identity.Authentication.Logout:input_type -> identity.LogoutRequest
+	6, // 5: identity.Authentication.Whoami:output_type -> identity.WhoamiResponse
+	2, // 6: identity.Authentication.Login:output_type -> identity.LoginResponse
+	4, // 7: identity.Authentication.Logout:output_type -> identity.LogoutResponse
+	5, // [5:8] is the sub-list for method output_type
+	2, // [2:5] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_identity_identity_proto_init() }
@@ -322,7 +411,7 @@ func file_identity_identity_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_identity_identity_proto_rawDesc), len(file_identity_identity_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

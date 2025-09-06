@@ -26,7 +26,15 @@ message LogoutResponse {
     bool success = 1;
 }
 
+message WhoamiRequest {
+}
+
+message WhoamiResponse {
+    User user = 1;
+}
+
 service Authentication {
+    rpc Whoami(WhoamiRequest) returns (WhoamiResponse);
     rpc Login(LoginRequest) returns (LoginResponse);
     rpc Logout(LogoutRequest) returns (LogoutResponse);
 }

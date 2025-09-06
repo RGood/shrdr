@@ -382,8 +382,122 @@ var identity;
     }
   }
   identity2.LogoutResponse = LogoutResponse;
+  class WhoamiRequest extends pb_1.Message {
+    #one_of_decls = [];
+    constructor(data) {
+      super();
+      pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+      if (!Array.isArray(data) && typeof data == "object") {
+      }
+    }
+    static fromObject(data) {
+      const message = new WhoamiRequest({});
+      return message;
+    }
+    toObject() {
+      const data = {};
+      return data;
+    }
+    serialize(w) {
+      const writer = w || new pb_1.BinaryWriter();
+      if (!w)
+        return writer.getResultBuffer();
+    }
+    static deserialize(bytes) {
+      const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new WhoamiRequest();
+      while (reader.nextField()) {
+        if (reader.isEndGroup())
+          break;
+        switch (reader.getFieldNumber()) {
+          default:
+            reader.skipField();
+        }
+      }
+      return message;
+    }
+    serializeBinary() {
+      return this.serialize();
+    }
+    static deserializeBinary(bytes) {
+      return WhoamiRequest.deserialize(bytes);
+    }
+  }
+  identity2.WhoamiRequest = WhoamiRequest;
+  class WhoamiResponse extends pb_1.Message {
+    #one_of_decls = [];
+    constructor(data) {
+      super();
+      pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+      if (!Array.isArray(data) && typeof data == "object") {
+        if ("user" in data && data.user != void 0) {
+          this.user = data.user;
+        }
+      }
+    }
+    get user() {
+      return pb_1.Message.getWrapperField(this, User, 1);
+    }
+    set user(value) {
+      pb_1.Message.setWrapperField(this, 1, value);
+    }
+    get has_user() {
+      return pb_1.Message.getField(this, 1) != null;
+    }
+    static fromObject(data) {
+      const message = new WhoamiResponse({});
+      if (data.user != null) {
+        message.user = User.fromObject(data.user);
+      }
+      return message;
+    }
+    toObject() {
+      const data = {};
+      if (this.user != null) {
+        data.user = this.user.toObject();
+      }
+      return data;
+    }
+    serialize(w) {
+      const writer = w || new pb_1.BinaryWriter();
+      if (this.has_user)
+        writer.writeMessage(1, this.user, () => this.user.serialize(writer));
+      if (!w)
+        return writer.getResultBuffer();
+    }
+    static deserialize(bytes) {
+      const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new WhoamiResponse();
+      while (reader.nextField()) {
+        if (reader.isEndGroup())
+          break;
+        switch (reader.getFieldNumber()) {
+          case 1:
+            reader.readMessage(message.user, () => message.user = User.deserialize(reader));
+            break;
+          default:
+            reader.skipField();
+        }
+      }
+      return message;
+    }
+    serializeBinary() {
+      return this.serialize();
+    }
+    static deserializeBinary(bytes) {
+      return WhoamiResponse.deserialize(bytes);
+    }
+  }
+  identity2.WhoamiResponse = WhoamiResponse;
   class UnimplementedAuthenticationService {
     static definition = {
+      Whoami: {
+        path: "/identity.Authentication/Whoami",
+        requestStream: false,
+        responseStream: false,
+        requestSerialize: (message) => Buffer.from(message.serialize()),
+        requestDeserialize: (bytes) => WhoamiRequest.deserialize(new Uint8Array(bytes)),
+        responseSerialize: (message) => Buffer.from(message.serialize()),
+        responseDeserialize: (bytes) => WhoamiResponse.deserialize(new Uint8Array(bytes))
+      },
       Login: {
         path: "/identity.Authentication/Login",
         requestStream: false,
@@ -409,6 +523,9 @@ var identity;
     constructor(address, credentials, options) {
       super(address, credentials, options);
     }
+    Whoami = (message, metadata, options, callback) => {
+      return super.Whoami(message, metadata, options, callback);
+    };
     Login = (message, metadata, options, callback) => {
       return super.Login(message, metadata, options, callback);
     };

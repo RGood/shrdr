@@ -390,6 +390,116 @@ export namespace identity {
             return LogoutResponse.deserialize(bytes);
         }
     }
+    export class WhoamiRequest extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {}) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") { }
+        }
+        static fromObject(data: {}): WhoamiRequest {
+            const message = new WhoamiRequest({});
+            return message;
+        }
+        toObject() {
+            const data: {} = {};
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): WhoamiRequest {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new WhoamiRequest();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): WhoamiRequest {
+            return WhoamiRequest.deserialize(bytes);
+        }
+    }
+    export class WhoamiResponse extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            user?: User;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("user" in data && data.user != undefined) {
+                    this.user = data.user;
+                }
+            }
+        }
+        get user() {
+            return pb_1.Message.getWrapperField(this, User, 1) as User;
+        }
+        set user(value: User) {
+            pb_1.Message.setWrapperField(this, 1, value);
+        }
+        get has_user() {
+            return pb_1.Message.getField(this, 1) != null;
+        }
+        static fromObject(data: {
+            user?: ReturnType<typeof User.prototype.toObject>;
+        }): WhoamiResponse {
+            const message = new WhoamiResponse({});
+            if (data.user != null) {
+                message.user = User.fromObject(data.user);
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                user?: ReturnType<typeof User.prototype.toObject>;
+            } = {};
+            if (this.user != null) {
+                data.user = this.user.toObject();
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.has_user)
+                writer.writeMessage(1, this.user, () => this.user.serialize(writer));
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): WhoamiResponse {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new WhoamiResponse();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        reader.readMessage(message.user, () => message.user = User.deserialize(reader));
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): WhoamiResponse {
+            return WhoamiResponse.deserialize(bytes);
+        }
+    }
     interface GrpcUnaryServiceInterface<P, R> {
         (message: P, metadata: grpc_1.Metadata, options: grpc_1.CallOptions, callback: grpc_1.requestCallback<R>): grpc_1.ClientUnaryCall;
         (message: P, metadata: grpc_1.Metadata, callback: grpc_1.requestCallback<R>): grpc_1.ClientUnaryCall;
@@ -416,6 +526,15 @@ export namespace identity {
     }
     export abstract class UnimplementedAuthenticationService {
         static definition = {
+            Whoami: {
+                path: "/identity.Authentication/Whoami",
+                requestStream: false,
+                responseStream: false,
+                requestSerialize: (message: WhoamiRequest) => Buffer.from(message.serialize()),
+                requestDeserialize: (bytes: Buffer) => WhoamiRequest.deserialize(new Uint8Array(bytes)),
+                responseSerialize: (message: WhoamiResponse) => Buffer.from(message.serialize()),
+                responseDeserialize: (bytes: Buffer) => WhoamiResponse.deserialize(new Uint8Array(bytes))
+            },
             Login: {
                 path: "/identity.Authentication/Login",
                 requestStream: false,
@@ -436,6 +555,7 @@ export namespace identity {
             }
         };
         [method: string]: grpc_1.UntypedHandleCall;
+        abstract Whoami(call: grpc_1.ServerUnaryCall<WhoamiRequest, WhoamiResponse>, callback: grpc_1.sendUnaryData<WhoamiResponse>): void;
         abstract Login(call: grpc_1.ServerUnaryCall<LoginRequest, LoginResponse>, callback: grpc_1.sendUnaryData<LoginResponse>): void;
         abstract Logout(call: grpc_1.ServerUnaryCall<LogoutRequest, LogoutResponse>, callback: grpc_1.sendUnaryData<LogoutResponse>): void;
     }
@@ -443,6 +563,9 @@ export namespace identity {
         constructor(address: string, credentials: grpc_1.ChannelCredentials, options?: Partial<grpc_1.ChannelOptions>) {
             super(address, credentials, options);
         }
+        Whoami: GrpcUnaryServiceInterface<WhoamiRequest, WhoamiResponse> = (message: WhoamiRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<WhoamiResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<WhoamiResponse>, callback?: grpc_1.requestCallback<WhoamiResponse>): grpc_1.ClientUnaryCall => {
+            return super.Whoami(message, metadata, options, callback);
+        };
         Login: GrpcUnaryServiceInterface<LoginRequest, LoginResponse> = (message: LoginRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<LoginResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<LoginResponse>, callback?: grpc_1.requestCallback<LoginResponse>): grpc_1.ClientUnaryCall => {
             return super.Login(message, metadata, options, callback);
         };
