@@ -8,9 +8,12 @@
         "packages/*"
     ],
     "scripts": {
-        "protos": "protoc --ts_out=packages/protos/src -I protos protos/**/*.proto"
+        "protos": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=packages/protos/src/generated --ts_proto_opt=env=browser,outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false,outputIndex=true ./protos/**/*.proto -I=./protos"
     },
     "devDependencies": {
         "protoc-gen-ts": "^0.8.7"
+    },
+    "dependencies": {
+        "ts-proto": "^2.7.7"
     }
 }

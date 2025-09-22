@@ -1,6 +1,6 @@
 PROTO_DIR=protos
 GO_OUT_DIR=common/pkg/generated
-TS_OUT_DIR=packages/protos/src
+TS_OUT_DIR=packages/protos/src/generated
 
 PROTOC=protoc
 PROTOC_GEN_GO := $(shell which protoc-gen-go)

@@ -22,6 +22,282 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type JoinRoom struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RoomId        string                 `protobuf:"bytes,1,opt,name=room_id,json=roomId,proto3" json:"room_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *JoinRoom) Reset() {
+	*x = JoinRoom{}
+	mi := &file_chat_chat_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *JoinRoom) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*JoinRoom) ProtoMessage() {}
+
+func (x *JoinRoom) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use JoinRoom.ProtoReflect.Descriptor instead.
+func (*JoinRoom) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *JoinRoom) GetRoomId() string {
+	if x != nil {
+		return x.RoomId
+	}
+	return ""
+}
+
+type Message struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to Target:
+	//
+	//	*Message_RoomId
+	//	*Message_UserId
+	Target        isMessage_Target `protobuf_oneof:"target"`
+	Content       string           `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Message) Reset() {
+	*x = Message{}
+	mi := &file_chat_chat_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Message) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Message) ProtoMessage() {}
+
+func (x *Message) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Message.ProtoReflect.Descriptor instead.
+func (*Message) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *Message) GetTarget() isMessage_Target {
+	if x != nil {
+		return x.Target
+	}
+	return nil
+}
+
+func (x *Message) GetRoomId() string {
+	if x != nil {
+		if x, ok := x.Target.(*Message_RoomId); ok {
+			return x.RoomId
+		}
+	}
+	return ""
+}
+
+func (x *Message) GetUserId() string {
+	if x != nil {
+		if x, ok := x.Target.(*Message_UserId); ok {
+			return x.UserId
+		}
+	}
+	return ""
+}
+
+func (x *Message) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+type isMessage_Target interface {
+	isMessage_Target()
+}
+
+type Message_RoomId struct {
+	RoomId string `protobuf:"bytes,1,opt,name=room_id,json=roomId,proto3,oneof"`
+}
+
+type Message_UserId struct {
+	UserId string `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3,oneof"`
+}
+
+func (*Message_RoomId) isMessage_Target() {}
+
+func (*Message_UserId) isMessage_Target() {}
+
+type LeaveRoom struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RoomId        string                 `protobuf:"bytes,1,opt,name=room_id,json=roomId,proto3" json:"room_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LeaveRoom) Reset() {
+	*x = LeaveRoom{}
+	mi := &file_chat_chat_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LeaveRoom) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LeaveRoom) ProtoMessage() {}
+
+func (x *LeaveRoom) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LeaveRoom.ProtoReflect.Descriptor instead.
+func (*LeaveRoom) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *LeaveRoom) GetRoomId() string {
+	if x != nil {
+		return x.RoomId
+	}
+	return ""
+}
+
+type Send struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to Action:
+	//
+	//	*Send_Join
+	//	*Send_Leave
+	//	*Send_Message
+	Action        isSend_Action `protobuf_oneof:"action"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Send) Reset() {
+	*x = Send{}
+	mi := &file_chat_chat_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Send) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Send) ProtoMessage() {}
+
+func (x *Send) ProtoReflect() protoreflect.Message {
+	mi := &file_chat_chat_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Send.ProtoReflect.Descriptor instead.
+func (*Send) Descriptor() ([]byte, []int) {
+	return file_chat_chat_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Send) GetAction() isSend_Action {
+	if x != nil {
+		return x.Action
+	}
+	return nil
+}
+
+func (x *Send) GetJoin() *JoinRoom {
+	if x != nil {
+		if x, ok := x.Action.(*Send_Join); ok {
+			return x.Join
+		}
+	}
+	return nil
+}
+
+func (x *Send) GetLeave() *LeaveRoom {
+	if x != nil {
+		if x, ok := x.Action.(*Send_Leave); ok {
+			return x.Leave
+		}
+	}
+	return nil
+}
+
+func (x *Send) GetMessage() *Message {
+	if x != nil {
+		if x, ok := x.Action.(*Send_Message); ok {
+			return x.Message
+		}
+	}
+	return nil
+}
+
+type isSend_Action interface {
+	isSend_Action()
+}
+
+type Send_Join struct {
+	Join *JoinRoom `protobuf:"bytes,1,opt,name=join,proto3,oneof"`
+}
+
+type Send_Leave struct {
+	Leave *LeaveRoom `protobuf:"bytes,2,opt,name=leave,proto3,oneof"`
+}
+
+type Send_Message struct {
+	Message *Message `protobuf:"bytes,3,opt,name=message,proto3,oneof"`
+}
+
+func (*Send_Join) isSend_Action() {}
+
+func (*Send_Leave) isSend_Action() {}
+
+func (*Send_Message) isSend_Action() {}
+
 type ChatMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to Target:
@@ -38,7 +314,7 @@ type ChatMessage struct {
 
 func (x *ChatMessage) Reset() {
 	*x = ChatMessage{}
-	mi := &file_chat_chat_proto_msgTypes[0]
+	mi := &file_chat_chat_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -50,7 +326,7 @@ func (x *ChatMessage) String() string {
 func (*ChatMessage) ProtoMessage() {}
 
 func (x *ChatMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_chat_chat_proto_msgTypes[0]
+	mi := &file_chat_chat_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -63,7 +339,7 @@ func (x *ChatMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatMessage.ProtoReflect.Descriptor instead.
 func (*ChatMessage) Descriptor() ([]byte, []int) {
-	return file_chat_chat_proto_rawDescGZIP(), []int{0}
+	return file_chat_chat_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ChatMessage) GetTarget() isChatMessage_Target {
@@ -132,16 +408,31 @@ var File_chat_chat_proto protoreflect.FileDescriptor
 
 const file_chat_chat_proto_rawDesc = "" +
 	"\n" +
-	"\x0fchat/chat.proto\x12\x04chat\x1a\x17identity/identity.proto\"\xad\x01\n" +
+	"\x0fchat/chat.proto\x12\x04chat\x1a\x17identity/identity.proto\"#\n" +
+	"\bJoinRoom\x12\x17\n" +
+	"\aroom_id\x18\x01 \x01(\tR\x06roomId\"c\n" +
+	"\aMessage\x12\x19\n" +
+	"\aroom_id\x18\x01 \x01(\tH\x00R\x06roomId\x12\x19\n" +
+	"\auser_id\x18\x02 \x01(\tH\x00R\x06userId\x12\x18\n" +
+	"\acontent\x18\x03 \x01(\tR\acontentB\b\n" +
+	"\x06target\"$\n" +
+	"\tLeaveRoom\x12\x17\n" +
+	"\aroom_id\x18\x01 \x01(\tR\x06roomId\"\x8a\x01\n" +
+	"\x04Send\x12$\n" +
+	"\x04join\x18\x01 \x01(\v2\x0e.chat.JoinRoomH\x00R\x04join\x12'\n" +
+	"\x05leave\x18\x02 \x01(\v2\x0f.chat.LeaveRoomH\x00R\x05leave\x12)\n" +
+	"\amessage\x18\x03 \x01(\v2\r.chat.MessageH\x00R\amessageB\b\n" +
+	"\x06action\"\xad\x01\n" +
 	"\vChatMessage\x12\x19\n" +
 	"\aroom_id\x18\x01 \x01(\tH\x00R\x06roomId\x12\x19\n" +
 	"\auser_id\x18\x02 \x01(\tH\x00R\x06userId\x12&\n" +
 	"\x06author\x18\x03 \x01(\v2\x0e.identity.UserR\x06author\x12\x18\n" +
 	"\acontent\x18\x04 \x01(\tR\acontent\x12\x1c\n" +
 	"\ttimestamp\x18\x05 \x01(\x03R\ttimestampB\b\n" +
-	"\x06target2<\n" +
-	"\x04Chat\x124\n" +
-	"\bJoinRoom\x12\x11.chat.ChatMessage\x1a\x11.chat.ChatMessage(\x010\x01B7Z5github.com/RGood/shrdr/common/pkg/generated/chat;chatb\x06proto3"
+	"\x06target24\n" +
+	"\x04Chat\x12,\n" +
+	"\aConnect\x12\n" +
+	".chat.Send\x1a\x11.chat.ChatMessage(\x010\x01B7Z5github.com/RGood/shrdr/common/pkg/generated/chat;chatb\x06proto3"
 
 var (
 	file_chat_chat_proto_rawDescOnce sync.Once
@@ -155,20 +446,27 @@ func file_chat_chat_proto_rawDescGZIP() []byte {
 	return file_chat_chat_proto_rawDescData
 }
 
-var file_chat_chat_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_chat_chat_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_chat_chat_proto_goTypes = []any{
-	(*ChatMessage)(nil),   // 0: chat.ChatMessage
-	(*identity.User)(nil), // 1: identity.User
+	(*JoinRoom)(nil),      // 0: chat.JoinRoom
+	(*Message)(nil),       // 1: chat.Message
+	(*LeaveRoom)(nil),     // 2: chat.LeaveRoom
+	(*Send)(nil),          // 3: chat.Send
+	(*ChatMessage)(nil),   // 4: chat.ChatMessage
+	(*identity.User)(nil), // 5: identity.User
 }
 var file_chat_chat_proto_depIdxs = []int32{
-	1, // 0: chat.ChatMessage.author:type_name -> identity.User
-	0, // 1: chat.Chat.JoinRoom:input_type -> chat.ChatMessage
-	0, // 2: chat.Chat.JoinRoom:output_type -> chat.ChatMessage
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // 0: chat.Send.join:type_name -> chat.JoinRoom
+	2, // 1: chat.Send.leave:type_name -> chat.LeaveRoom
+	1, // 2: chat.Send.message:type_name -> chat.Message
+	5, // 3: chat.ChatMessage.author:type_name -> identity.User
+	3, // 4: chat.Chat.Connect:input_type -> chat.Send
+	4, // 5: chat.Chat.Connect:output_type -> chat.ChatMessage
+	5, // [5:6] is the sub-list for method output_type
+	4, // [4:5] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_chat_chat_proto_init() }
@@ -176,7 +474,16 @@ func file_chat_chat_proto_init() {
 	if File_chat_chat_proto != nil {
 		return
 	}
-	file_chat_chat_proto_msgTypes[0].OneofWrappers = []any{
+	file_chat_chat_proto_msgTypes[1].OneofWrappers = []any{
+		(*Message_RoomId)(nil),
+		(*Message_UserId)(nil),
+	}
+	file_chat_chat_proto_msgTypes[3].OneofWrappers = []any{
+		(*Send_Join)(nil),
+		(*Send_Leave)(nil),
+		(*Send_Message)(nil),
+	}
+	file_chat_chat_proto_msgTypes[4].OneofWrappers = []any{
 		(*ChatMessage_RoomId)(nil),
 		(*ChatMessage_UserId)(nil),
 	}
@@ -186,7 +493,7 @@ func file_chat_chat_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_chat_chat_proto_rawDesc), len(file_chat_chat_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

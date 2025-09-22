@@ -1,0 +1,4 @@
+FROM node:current-alpine AS serve-dev
+WORKDIR /app
+
+CMD [ "yarn", "workspace", "@shrdr/web-ui", "start" ]

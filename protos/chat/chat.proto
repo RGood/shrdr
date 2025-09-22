@@ -6,6 +6,30 @@ option go_package = "github.com/RGood/shrdr/common/pkg/generated/chat;chat";
 
 import "identity/identity.proto";
 
+message JoinRoom {
+    string room_id = 1;
+}
+
+message Message {
+    oneof target {
+        string room_id = 1;
+        string user_id = 2;
+    }
+    string content = 3;
+}
+
+message LeaveRoom {
+    string room_id = 1;
+}
+
+message Send {
+    oneof action {
+        JoinRoom join = 1;
+        LeaveRoom leave = 2;
+        Message message = 3;
+    }
+}
+
 message ChatMessage {
     oneof target {
         string room_id = 1;
@@ -17,5 +41,5 @@ message ChatMessage {
 }
 
 service Chat {
-    rpc JoinRoom(stream ChatMessage) returns (stream ChatMessage);
+    rpc Connect(stream Send) returns (stream ChatMessage);
 }

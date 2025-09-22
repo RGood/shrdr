@@ -7,3 +7,23 @@ services:
     ports:
       - "8080:8080"
     restart: unless-stopped
+  envoy:
+    image: envoyproxy/envoy:v1.33-latest # Or a specific version
+    ports:
+    - "17778:17778" # Expose Envoy's listener port for gRPC-Web
+    volumes:
+    - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml # Mount your Envoy configuration
+    depends_on:
+    - server # Ensure gRPC server starts before Envoy
+  web-ui:
+    build:
+      context: .
+      dockerfile: web-ui/Dockerfile.dev
+    container_name: shrdr-web-ui
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    volumes:
+    - .:/app
+    depends_on:
+    - envoy # Ensure Envoy starts before the web UI
